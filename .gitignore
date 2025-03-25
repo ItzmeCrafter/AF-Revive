@@ -6,14 +6,15 @@ tool/lib/
 tool/__pycache__/
 .venv
 venv
-
+"FILES ORIGINAL"/
+FILES ORIGINAL/
 
 # ignore files
 copy.sh
 *.bin
 *.py[cod]
-"FILES ORIGINAL"/
-FILES ORIGINAL/
+gitauto.sh
+gitauto.bat
 
 # eol
 * text=lf
