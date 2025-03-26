@@ -10,7 +10,7 @@ description = '''
 authors = ["AziAngelo"]
 url = "https://github.com/Aziangelo"
 uuid = "177361cb-044e-483a-9ca3-52d75ab9376b" # Use https://www.uuidgenerator.net/version4
-materials = ["Sky", "RenderChunk", "Actor", "ActorGlint", "EndSky", "Clouds", "SunMoon", "Weather", "ItemInHandTextured", "ItemInHandColor", "ItemInHandColorGlint", "Stars"]
+materials = ["Sky", "RenderChunk", "Actor", "SunMoon", "ItemInHandColor"]
 
 [info] 
 copyright = '''
