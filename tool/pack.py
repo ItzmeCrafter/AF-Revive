@@ -116,7 +116,7 @@ def run(args):
 
     console.print("  [bold green]Newb Pack Builder[/] \n  [dim]build tool: Lazurite\n", style="")
 
-    with open('src/newb/pack_config.toml', 'rb') as f:
+    with open('src/azify/pack_config.toml', 'rb') as f:
         try:
             pack_config = tomllib.load(f)
         except tomllib.TOMLDecodeError as e:

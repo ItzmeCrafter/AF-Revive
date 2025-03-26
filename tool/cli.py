@@ -7,7 +7,7 @@ import setup
 def main():
     parser = argparse.ArgumentParser(
         prog='build',
-        description="Newb Shader Builder: Wrapper for lazurite, to build NXL RenderDragon",
+        description="Newb/AziFy Shader Builder: Wrapper for lazurite, to build NXL RenderDragon",
         epilog="GitHub: https://github.com/devendrn/newb-x-mcbe"
     )
 
