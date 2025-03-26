@@ -20,6 +20,6 @@ void main() {
     v_color0 = mix(SkyColor, FogColor, a_color0.x);
     gl_Position = mul(u_modelViewProj, vec4(pos));
 #else
-  gl_FragColor = vec4(0.0,0.0,0.0,0.0);
+  gl_Position = vec4(0.0,0.0,0.0,0.0);
 #endif
 }

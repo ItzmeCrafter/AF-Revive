@@ -68,7 +68,7 @@ float dusk = worldtime.y;
 float rain = worldtime.w;
 
 float yq = lum(v_light.rgb);
-albedo = applyActorDiffuse(albedo, v_color0.rgb, vec4(night_fix(sat(v_light.rgb,0.0)),v_light.a), ColorBased.x, OverlayColor);
+albedo = applyActorDiffuse(albedo, v_color0.rgb, vec4(n_fix(sat(v_light.rgb,0.0)),v_light.a), ColorBased.x, OverlayColor);
 albedo.rgb *= worldcolor;
 
 //diffuse.rgb *= night_fix(sat(v_light.rgb,0.0));
