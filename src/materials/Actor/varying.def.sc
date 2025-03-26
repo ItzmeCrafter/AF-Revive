@@ -18,9 +18,9 @@ vec4 v_fog : COLOR2;
 vec4 v_light : COLOR3;
 centroid vec2 v_texcoord0 : TEXCOORD0;
 
-vec3 wpos : POSITION0;
-vec3 cpos : POSITION1;
+vec3 wpos : POSITION1;
+vec3 cpos : POSITION2;
 
-float fogplacement : COLOR2;
-vec3 worldcolor : COLOR0;
-vec4 worldtime : COLOR2;
+float fogplacement : COLOR4;
+vec3 worldcolor : COLOR5;
+vec4 worldtime : COLOR6;

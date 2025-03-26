@@ -13,15 +13,15 @@ vec4          v_fog        : COLOR2;
 centroid vec2 v_texcoord0  : TEXCOORD0;
 vec2          v_lightmapUV : TEXCOORD1;
 
-vec3 wpos : POSITION0;
-vec3 cpos : POSITION1;
+vec3 wpos : POSITION1;
+vec3 cpos : POSITION2;
 
-float fogplacement : COLOR2;
-vec3 worldcolor : COLOR0;
-vec4 worldtime : COLOR2;
-vec2 findcave : COLOR0;
-vec3 cunstructAO : COLOR0;
-float nshd : COLOR0;
-vec3 removeAO : COLOR0;
-vec4 sunbloom : COLOR2;
-float wflag : COLOR0;
+float fogplacement : COLOR3;
+vec3 worldcolor : COLOR4;
+vec4 worldtime : COLOR5;
+vec2 findcave : COLOR6;
+vec3 cunstructAO : COLOR7;
+float nshd : COLOR8;
+vec3 removeAO : COLOR9;
+vec4 sunbloom : COLOR10;
+float wflag : COLOR11;
