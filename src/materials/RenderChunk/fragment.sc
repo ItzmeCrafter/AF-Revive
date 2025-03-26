@@ -44,7 +44,7 @@ vec4 roughsun(vec4 c, float s, vec3 P, vec3 wp, vec3 wt, float cv) {
 }
 
 vec4 sunRef(vec4 c, float s, vec3 P, vec3 wp, vec3 cp, vec3 wt, vec2 l) {
-  vec3 SC = mix(vec3(1.,0.8, 0.5)+0.4, vec3(0.9), wt.z);
+  vec3 SC = mix(vec3(1.,0.8, 0.5)+0.4, vec3(.9,.9,.9), wt.z);
   vec3 bp = normalize(-wp);
   vec3 sp1 = vec3(0.89, 0.159, 0.0);
   float s1 = max(0.0, dot(P, normalize(bp + sp1)));
@@ -112,7 +112,7 @@ float d2 = lum(texture2D(s_MatTexture, v_texcoord0 + dl_uv.yx).rgb);
 vec3 normap = normalize(vec3((d0 - d1) * 2.5, (d0 - d2) * 2.5, 1.0));
 norml.xy = normap.xy;
 norml.z = inversesqrt(dot(norml.xy, norml.xy));
-norml = normap * TBN;
+norml = mul(normap, TBN);
 
 vec3 rfpos = reflect(normalize(wpos), norml);
 

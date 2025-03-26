@@ -42,10 +42,10 @@ return tmp;
 }
 
 vec3 mCC(vec3 wt) {
-return mix(mix(mix(vec3(0.9,0.95,1.0)+0.45, vec3(0.1,0.4,0.5), wt.z), vec3(1.0, 0.8, 0.75), wt.y), mix(vec3(0.7), vec3(0.25), wt.z), wt.x);}
+return mix(mix(mix(vec3(0.9,0.95,1.0)+0.45, vec3(0.1,0.4,0.5), wt.z), vec3(1.0, 0.8, 0.75), wt.y), mix(vec3(.7,.7,.7), vec3(.25,.25,.25), wt.z), wt.x);}
 vec3 sCC(vec3 wt) {
 return mix(mix(mix(vec3(0.4,0.25,0.15
-), vec3(0.06,0.11,0.18), wt.z), vec3(1.1, 0.3, 0.2), wt.y), mix(vec3(0.35), vec3(0.09), wt.z), wt.x);}
+), vec3(0.06,0.11,0.18), wt.z), vec3(1.1, 0.3, 0.2), wt.y), mix(vec3(.35,.35,.35), vec3(.09,.09,.09), wt.z), wt.x);}
 
 float calculateHash(highp vec3 p5) {
     return fract((p5.x * p5.y) + p5.z);
