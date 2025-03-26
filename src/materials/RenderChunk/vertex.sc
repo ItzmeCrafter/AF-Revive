@@ -18,7 +18,7 @@ uniform vec4 FogColor;
 
 vec3 ao(vec3 x, vec3 vcol) {
     vec3 ncol = normalize(vcol);
-    return mix(x, x * ncol, step(0.001, length(ncol - vec3(ncol.y))));}
+    return mix(x, x * ncol, step(0.001, length(ncol - vec3(ncol.y,ncol.y,ncol.y))));}
 
 float drk(vec4 c, vec2 uv) {
     float shd = smoothstep(0.885, 0.71, c.y + 0.2 * (c.y - c.z));
