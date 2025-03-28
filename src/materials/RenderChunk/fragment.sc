@@ -64,22 +64,30 @@ vec4 sunRef(vec4 c, float s, vec3 P, vec3 wp, vec3 cp, vec3 wt, vec2 l) {
 }
 
 
-vec4 wFunc(vec4 c, float w, vec3 P, vec3 Cp, vec3 Wp, vec2 l, vec3 wt, sampler2D t, vec2 u, float iT) {
+vec4 wFunc(vec4 c, const float w, const vec3 P, const vec3 Cp, const vec3 Wp, const vec2 l, const vec3 wt, sampler2D t, vec2 u, float iT) {
   vec3 wn = normalize(Wp);
   vec3 vD = normalize(-Wp);
   float NoV = max(0.0, dot(P, vD));
   float F = smoothstep(0.38, 0.0, NoV);
   vec3 Rp = reflect(normalize(Wp), P);
-  float L = pow((1.0 - abs(Rp.y)), 3.0);
+  float L = pow(1.0 - abs(Rp.y), 3.0);
 
-  if (w > 0.5) {
-    vec3 wc = dS(vec3(1.,1.,1.), vD, wt);
+    vec3 wc = dS(c.rgb, vD, wt);
     //wc = mix(wc, vec3(1.0, 0.35, 0.26), wt.y);
     //wc = mix(wc, mix(vec3(0.45), vec3(0.15), wt.z), wt.x);
-    vec3 wb = mix(c.xyz, wc, clamp(L, 0.0, 1.0));
-    c = vec4(mix(c.xyz, wb, (1.0 - abs(dot(wn, P))) * l.y), mix(c.w * 0.35, 1.0, F));
-  }
+    vec3 wb = mix(c.rgb, wc, clamp(L, 0.0, 1.0));
+    c = vec4(mix(c.rgb, wc, (1.0 - abs(dot(wn, P))) * l.y), mix(c.w * 0.35, 1.0, F));
+  
   return c;
+}
+
+vec3 normals(in sampler2D tex, in vec2 coord0) {
+	vec2 dl_uv = vec2(pbr_Strength, 0.);
+  float d0 = lum(texture2D(tex, coord0 + dl_uv.yy).rgb);
+  float d1 = lum(texture2D(tex, coord0 + dl_uv.xy).rgb);
+  float d2 = lum(texture2D(tex, coord0 + dl_uv.yx).rgb);
+
+	return normalize(vec3((d0 - d1) * 2.5, (d0 - d2) * 2.5, 1.0));
 }
 
 void main() {
@@ -104,12 +112,7 @@ mat3 TBN = mat3(
     0.0, 0.0, norml.y,
     -norml.x, norml.y, norml.z);
 
-vec2 dl_uv = vec2(pbr_Strength, 0.);
-float d0 = lum(texture2D(s_MatTexture, v_texcoord0 + dl_uv.yy).rgb);
-float d1 = lum(texture2D(s_MatTexture, v_texcoord0 + dl_uv.xy).rgb);
-float d2 = lum(texture2D(s_MatTexture, v_texcoord0 + dl_uv.yx).rgb);
-
-vec3 normap = normalize(vec3((d0 - d1) * 2.5, (d0 - d2) * 2.5, 1.0));
+vec3 normap = normals(s_MatTexture,v_texcoord0);
 norml.xy = normap.xy;
 norml.z = inversesqrt(dot(norml.xy, norml.xy));
 norml = mul(normap, TBN);
@@ -206,7 +209,7 @@ if (Roughs > 0.5) {
 }
 
 #ifdef TRANSPARENT
-if (wflag > 0.5) {
+if (wflag > 0.0) {
 // W_Gradient
 diffuse = wFunc(diffuse, wflag, norml, cpos, wpos, v_lightmapUV, vec3(worldtime.w,worldtime.y,worldtime.z), s_MatTexture, v_texcoord0, ViewPositionAndTime.w);
 
