@@ -34,46 +34,40 @@ t = vec3(-1, 0, 0);
 }
 
 vec4 roughsun(vec4 c, float s, vec3 P, vec3 wp, vec3 wt, float cv) {
-    vec3 SC = mix(vec3(0.9, 0.7, 0.3), vec3(0.0, 0.05, 0.1), wt.z);
-    vec3 bp = normalize(-wp);
-    vec3 sp[3] = vec3[3](
-        vec3(0.89, 0.259, 0.0),
-        vec3(-0.968, 0.295, 0.0),
-        vec3(0.968, 0.295, 0.0)
-    );
-    float sFactors[3];
-    for (int i = 0; i < 3; i++) {
-        sFactors[i] = cl(pow(max(0.0, dot(P, normalize(bp + sp[i]))), s));
-    }
-    float invCv = inv1(cv);
-    float factor = (1.0 - wt.x) * invCv;
-    vec4 SC4 = vec4(SC, 1.0);
-    c += SC4 * (sFactors[0] * (1.0 - wt.y) * factor);
-    c += SC4 * 0.5 * (sFactors[1] * wt.y * factor);
-    c += SC4 * (sFactors[2] * wt.y * factor);
-    return c;
+  vec3 SC = mix(vec3(.9,.7,.3), vec3(.0,.05,.1), wt.z);
+  vec3 bp = normalize(-wp);
+  vec3 sp1 = vec3(.89,.259,.0);
+  float s1 = max(.0, dot(P, normalize(bp + sp1)));
+  vec3 sp2 = vec3(-.968,.295,.0);
+  float s2 = max(.0, dot(P, normalize(bp + sp2)));
+  vec3 sp3 = vec3(.968,.295,.0);
+  float s3 = max(0.0, dot(P, normalize(bp + sp3)));
+  vec4 SC4 = vec4(SC,1.);
+  float p1 = cl(pow(s1, s)) * (1.0 - wt.y) * inv1(cv) * (1.0 - wt.x);
+  float p2 = cl(pow(s2, s)) * wt.y * inv1(cv) * (1.0 - wt.x);
+  float p3 = cl(pow(s3, s)) * wt.y * inv1(cv) * (1.0 - wt.x);
+  c += SC4 * p1 + SC4 * 0.5 * p2 + SC4 * inv1(cv) * p3;
+  return c;
 }
 
-vec4 sunRef(vec4 c, float s, vec3 P, vec3 wp, vec3 cp, vec3 wt, vec2 l) {
-    vec3 SC = mix(vec3(1.4, 1.2, 0.9), vec3(0.9, 0.9, 0.9), wt.z);
-    vec3 bp = normalize(-wp);
-    vec3 sp[3] = vec3[3](
-        vec3(0.89, 0.159, 0.0),
-        vec3(-0.968, 0.295, 0.0),
-        vec3(0.968, 0.295, 0.0)
-    );
-    float sFactors[3];
-    for (int i = 0; i < 3; i++) {
-        sFactors[i] = cl(pow(max(0.0, dot(P, normalize(bp + sp[i]))), s));
-    }
-    float wave = sin(wp.x * 0.2 + ViewPositionAndTime.x * 2.0) * 0.9 +  
-                 sin(wp.z * 0.2 + ViewPositionAndTime.x * 2.0) * 0.7;  
-    float groundNoise = noise(vec2(cp.x * 0.8 + ViewPositionAndTime.w * 2.0, cp.z * 0.8) + wave);
-    float lightFactor = (1.0 - wt.x) * l.y;
-    vec4 SC4 = vec4(SC, 1.0);
-    c += SC4 * (sFactors[0] * (1.0 - wt.y) * lightFactor) * groundNoise;
-    c += SC4 * 1.9 * (sFactors[1] + sFactors[2]) * wt.y * lightFactor * groundNoise;
-    return c;
+vec4 sunRef(lowp vec4 c, float s, vec3 P, vec3 wp, vec3 cp, lowp vec3 wt, lowp vec2 l) {
+  lowp vec3 SC = mix(vec3(1.,0.8, 0.5)+0.4, vec3(.9,.9,.9), wt.z);
+  lowp vec3 bp = normalize(-wp);
+  lowp vec3 sp1 = vec3(0.89, 0.159, 0.0);
+  lowp float s1 = max(0.0, dot(P, normalize(bp + sp1)));
+  lowp vec3 sp2 = vec3(-0.968, 0.295, 0.0);
+  lowp float s2 = max(0.0, dot(P, normalize(bp + sp2)));
+  lowp vec3 sp3 = vec3(0.968, 0.295, 0.0);
+  lowp float s3 = max(0.0, dot(P, normalize(bp + sp3)));
+  lowp vec4 SC4 = vec4(SC, 1.0);
+  lowp float p1 = cl(pow(s1, s)) * (1.0 - wt.y) * l.y * (1.0 - wt.x);
+  lowp float p2 = cl(pow(s2, s)) * wt.y * l.y * (1.0 - wt.x);
+  lowp float p3 = cl(pow(s3, s)) * wt.y * l.y * (1.0 - wt.x);
+  float wave = sin(wp.x * 0.2 + ViewPositionAndTime.x * 2.0) * 0.9 +  
+             sin(wp.z * 0.2 + ViewPositionAndTime.x * 2.0) * 0.7;  
+  float groundNoise = noise(vec2(cp.x * 0.8 +ViewPositionAndTime.w * 2.0, cp.z * 0.8)+wave);
+  c += (SC4 * p1 + SC4 * 1.9 * p2 + SC4 * 1.9 * p3)*groundNoise;
+  return c;
 }
 
 
