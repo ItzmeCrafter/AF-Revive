@@ -25,3 +25,6 @@ float nshd : COLOR8;
 vec3 removeAO : COLOR9;
 vec4 sunbloom : COLOR10;
 float wflag : COLOR11;
+float endflag : COLOR12;
+vec3 mainSky : COLOR13;
+vec4 endfog : COLOR14;

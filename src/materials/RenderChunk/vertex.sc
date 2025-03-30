@@ -2,7 +2,7 @@ $input a_color0, a_position, a_texcoord0, a_texcoord1
 #ifdef INSTANCING
     $input i_data0, i_data1, i_data2, i_data3
 #endif
-$output v_color0, v_fog, v_texcoord0, v_lightmapUV, wpos, cpos, fogplacement, worldcolor, worldtime, findcave, cunstructAO, nshd, removeAO, sunbloom, wflag
+$output v_color0, v_fog, v_texcoord0, v_lightmapUV, wpos, cpos, fogplacement, worldcolor, worldtime, findcave, cunstructAO, nshd, removeAO, sunbloom, wflag, endflag, mainSky, endfog
 
 #include <bgfx_shader.sh>
 
@@ -11,7 +11,7 @@ uniform vec4 FogAndDistanceControl;
 uniform vec4 ViewPositionAndTime;
 uniform vec4 FogColor;
 
-#include <azify/def.h>
+#include <azify/func.sh>
 
 #define nlit inv1(pow(a_texcoord1.x, 2.0))
 #define wlit pow(a_texcoord1.x, 2.0)
@@ -63,7 +63,7 @@ void main() {
 float day = pow(max(min(1.0-FogColor.r*1.2,1.),0.),.4);
 float night = pow(max(min(1.-FogColor.r*1.5,1.),0.),1.2);
 float dusk = max(FogColor.r-FogColor.b,0.);
-float rain = mix(smoothstep(.66,.3, FogAndDistanceControl.x),0.,step(FogAndDistanceControl.x,0.))*inv1(smoothstep(.8,.2,a_texcoord1.y));
+float rain = smoothstep(.66,.3, FogAndDistanceControl.x)*inv1(smoothstep(.8,.2,a_texcoord1.y));
 worldtime = vec4(day,dusk,night,rain);
 
 
@@ -75,34 +75,36 @@ float cve1 = smoothstep(.95,.9,a_texcoord1.y);
 float cve2 = smoothstep(.7,.01,a_texcoord1.y);
 findcave = vec2(cve1,cve2);
 
-float findAO = inv1((color.g * 2.0 - min(color.r, color.b)) * 1.4);
-vec3 newAO = mix(mix(vec3(1.,1.,1.), mix(mix(vec3(.8,.95,1.)*.25, vec3(.75,.8,1.)*.2, night), vec3(.88,.88,.88), rain), mix(0.5, 1.0, findAO)), vec3(.95,.9,.85), pow(a_texcoord1.x,5.));
+float findAO = inv1((color.g * 2.0 - min(color.r, color.b)) * 1.5);
+vec3 newAO = mix(mix(vec3(1.,1.,1.), vec3(.8,.95,1.)*.2, mix(0.5, 1.0, findAO)), vec3(.95,.9,.85), pow(a_texcoord1.x,5.));
 cunstructAO = newAO;
 
 removeAO = ao(vec3(1.,1.,1.), color.rgb);
 
 nshd = drk(color, a_texcoord1);
 
-vec3 wcc = mix(vec3(1.,.95,.89), vec3(.44,.25,.34), dusk);
+vec3 wcc = mix(vec3(1.,.95,.89)*1.1, vec3(.44,.25,.34), dusk);
   wcc = mix(wcc, vec3(.35,.4,.45), night);
   wcc = mix(wcc, mix(vec3(.6,.6,.6), vec3(.4,.4,.4), night), rain);
   wcc = mix(wcc, vec3(.66,.7,.8), inv1(pow(a_texcoord1.y, 1.3)));
   wcc = mix(wcc, vec3(.9,.9,.9), wlit);
 worldcolor = wcc;
 
+vec3 getsky = dS(color.rgb, normalize(worldPos), worldtime.wyz);
+mainSky = getsky;
 
 float dist1 = 1.3;
 float fp0 = clamp((-worldPos.y * dist1) / FogAndDistanceControl.w, 0.0, 1.0);
 float fp1 = clamp(length(worldPos.xyz * 0.6) / FogAndDistanceControl.w, 0.0, 1.0);
-float fp3 = fp1*fp0;
-fogplacement = max(fogColor.a,fp3);
+float getfog = max(fogColor.a,fp1*fp0);
+fogplacement = getfog;
 
 float invWorldPosX = 1./worldPos.x;
 float sunlength = length(worldPos.zy*5.*invWorldPosX);
 float gaussian = clamp(1.-sunlength,.0,1.);
 float bloomFactor = smoothstep(0.0,1.0,gaussian)*3.5*(1.-night)*(1.-rain)*(dusk*a_texcoord1.y)*fogColor.a;
-vec3 bloomColor = vec3(1.,.65,.4);
-sunbloom = vec4(bloomColor,bloomFactor);
+vec4 getbloom = vec4(vec3(1.,.65,.4),bloomFactor);
+sunbloom = getbloom;
 
 wflag = 0.0;
 #ifdef TRANSPARENT
@@ -110,6 +112,14 @@ if (a_color0.r != a_color0.g || a_color0.g != a_color0.b || a_color0.r != a_colo
 	wflag = 1.0;
 }
 #endif
+
+endflag = 0.0;
+if (FogColor.r > FogColor.g && FogColor.b > FogColor.g && FogColor.r <= .05 && FogColor.g <= .05 && FogColor.b <= .05 && FogAndDistanceControl.x >= .56 && FogAndDistanceControl.x <= .8 && FogAndDistanceControl.y >= .59) {
+	endflag = 1.0;
+}
+
+vec4 getendfog = vec4(gradientCircle(normalize(-wpos.xyz)), clamp(smoothstep(0., 2.5, length(wpos.xyz * 4.) / FogAndDistanceControl.w), 0.0, 0.85));
+endfog = getendfog;
 
     v_texcoord0 = a_texcoord0;
     v_lightmapUV = a_texcoord1;

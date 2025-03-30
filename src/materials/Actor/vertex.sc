@@ -84,7 +84,7 @@ vec3 wcc = mix(vec3(1.,.95,.89), vec3(.44,.25,.34), dusk);
   wcc = mix(wcc, vec3(.35,.4,.45), night);
   wcc = mix(wcc, mix(vec3(.6,.6,.6), vec3(.4,.4,.4), night), rain);
   //wcc = mix(wcc, vec3(.66,.7,.8), inv1(pow(a_texcoord1.y, 1.3)));
-  wcc = mix(wcc, vec3(1.,.95,.9), pow(light.x, 2.0));
+  wcc = mix(wcc, vec3(1.,.95,.9), smoothstep(0.5,1., light.r));
 worldcolor = wcc;
 
 float dist1 = 1.3;

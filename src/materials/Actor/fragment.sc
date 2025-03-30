@@ -69,6 +69,7 @@ float rain = worldtime.w;
 
 float yq = lum(v_light.rgb);
 albedo = applyActorDiffuse(albedo, v_color0.rgb, vec4(n_fix(sat(v_light.rgb,0.0)),v_light.a), ColorBased.x, OverlayColor);
+albedo.rgb *= 0.7;
 albedo.rgb *= worldcolor;
 
 //diffuse.rgb *= night_fix(sat(v_light.rgb,0.0));
@@ -80,13 +81,21 @@ albedo.rgb = sat(albedo.rgb, mix(1.1, 0.58, rain));
         albedo = applyHudOpacity(albedo, HudOpacity.x);
     #endif
 
+
+float end = 0.0;
+if (FogColor.r > FogColor.g && FogColor.b > FogColor.g && FogColor.r <= .05 && FogColor.g <= .05 && FogColor.b <= .05 && FogAndDistanceControl.x >= .56 && FogAndDistanceControl.x <= .8 && FogAndDistanceControl.y >= .59) {
+	end = 1.0;
+}
+if (end > 0.5) {
+	albedo.rgb = mix(albedo.rgb, gradientCircle(normalize(-wpos.xyz)), clamp(smoothstep(0., 2.5, length(wpos.xyz * 4.) / FogAndDistanceControl.w), 0.0, 0.85));
+}else{
 if (FogAndDistanceControl.x < 0.01) {
 // F_FogWater
   albedo.rgb = mix(albedo.rgb,vec3(.35,.7,.8) * 0.75, v_fog.a);
 } else {
 // F_FogWorld
   albedo.rgb = mix(albedo.rgb, dS(albedo.rgb, normalize(wpos), vec3(smoothstep(.66,.3, FogAndDistanceControl.x),dusk,night)), fogplacement);
-}
+}}
 
     //albedo.rgb = applyFog(albedo.rgb, v_fog.rgb, v_fog.a);
     

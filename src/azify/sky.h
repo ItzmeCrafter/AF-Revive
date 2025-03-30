@@ -72,4 +72,8 @@ vec3 generateCloud1(vec3 col, vec3 pos, vec3 wT) {
     return col;
 }
 
+vec3 gradientCircle(vec3 pos) {
+    return mix(vec3(0.25,0.2,0.35), vec3(0.1,0.05,0.2), smoothstep(0.0, 1., pos.y+1.));
+}
+
 #endif

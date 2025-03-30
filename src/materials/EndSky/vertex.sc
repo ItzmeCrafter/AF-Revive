@@ -9,6 +9,8 @@ $output v_posTime, v_texcoord0
 //uniform vec4 FogColor;
 uniform vec4 ViewPositionAndTime;
 
+
+
 void main() {
   #ifdef INSTANCING
     mat4 model = mtxFromCols(i_data0, i_data1, i_data2, i_data3);
@@ -17,6 +19,7 @@ void main() {
   #endif
 
   vec3 pos = mul(model, vec4(a_position, 1.0)).xyz;
+  //vec3 pos = a_position;
 
   // pi/1800 (one complete rotation per hour)
   highp float t = 0.00174532925*ViewPositionAndTime.w;
@@ -26,7 +29,7 @@ void main() {
   float cosA = cos(t);
   pos.xz = mul(mtxFromRows(vec2(cosA,-sinA),vec2(sinA,cosA)), pos.xz);
 
-  vec3 wPos = pos;
+  vec3 wPos = a_position;
   wPos.xz = -wPos.xz;
 
   v_texcoord0 = 2.0*a_texcoord0;
