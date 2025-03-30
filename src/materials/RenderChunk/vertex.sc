@@ -118,7 +118,7 @@ if (FogColor.r > FogColor.g && FogColor.b > FogColor.g && FogColor.r <= .05 && F
 	endflag = 1.0;
 }
 
-vec4 getendfog = vec4(gradientCircle(normalize(-wpos.xyz)), clamp(smoothstep(0., 2.5, length(wpos.xyz * 4.) / FogAndDistanceControl.w), 0.0, 0.85));
+vec4 getendfog = vec4(gradientCircle(normalize(-worldPos.xyz)), clamp(smoothstep(0., 2.5, length(worldPos.xyz * 4.) / FogAndDistanceControl.w), 0.0, 0.85));
 endfog = getendfog;
 
     v_texcoord0 = a_texcoord0;
