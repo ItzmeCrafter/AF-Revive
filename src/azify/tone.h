@@ -22,7 +22,7 @@ vec3 sat(vec3 c, float a) {
     return min(mix(i, c, a), vec3(1.,1.,1.));}
 
 vec3 tonemap(vec3 c) {
-    float exposure = 1.0; // Adjust for brightness
+    float exposure = -1.0; // Adjust for brightness
     c *= exposure;
     return c / (c + vec3(1.,1.,1.)); // Reinhard tone mapping
 }
